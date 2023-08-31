@@ -39,10 +39,10 @@ async def main() -> None:
     """Show example on using the OJ Microline client."""
     async with OJMicroline(  # noqa: S106
         host="ocd5.azurewebsites.net",
-        customer_id=99,
-        api_key="<app-api-key>",
-        username="<your-username>",
-        password="<your-password>",
+        customer_id=15,
+        api_key="f219aab4-9ac0-4343-8422-b72203e2fac9",
+        username="RonnyRusten",
+        password="RonRus1969",
     ) as client:
         # fmt: off
         thermostats = await client.get_thermostats()
@@ -83,26 +83,26 @@ async def main() -> None:
             print(f"   Last Primary Mode is auto: {resource.last_primary_mode_is_auto}")
             print("")
 
-            sleep(5)
-            print(f"Updating the preset mode for {resource.name}")
-            print(f"Current: {REGULATION_MODES[resource.regulation_mode]}")
+            # sleep(5)
+            # print(f"Updating the preset mode for {resource.name}")
+            # print(f"Current: {REGULATION_MODES[resource.regulation_mode]}")
 
-            print(f"- Setting to {REGULATION_MODES[REGULATION_MANUAL]} and temperature 2500")  # noqa: E501
-            await client.set_regulation_mode(resource, REGULATION_MANUAL, 2500)
-            print("Sleeping for 5 seconds..")
-            sleep(5)
+            # print(f"- Setting to {REGULATION_MODES[REGULATION_MANUAL]} and temperature 2500")  # noqa: E501
+            # await client.set_regulation_mode(resource, REGULATION_MANUAL, 2500)
+            # print("Sleeping for 5 seconds..")
+            # sleep(5)
 
-            print(f"- Setting to {REGULATION_MODES[REGULATION_BOOST]}")  # noqa: E501
-            await client.set_regulation_mode(resource, REGULATION_BOOST)
-            print("Sleeping for 5 seconds..")
-            sleep(5)
+            # print(f"- Setting to {REGULATION_MODES[REGULATION_BOOST]}")  # noqa: E501
+            # await client.set_regulation_mode(resource, REGULATION_BOOST)
+            # print("Sleeping for 5 seconds..")
+            # sleep(5)
 
-            print(f"- Setting to {REGULATION_MODES[REGULATION_COMFORT]} and temperature 2500")  # noqa: E501
-            await client.set_regulation_mode(resource, REGULATION_COMFORT, 2500)
-            print("Sleeping for 5 seconds..")
+            # print(f"- Setting to {REGULATION_MODES[REGULATION_COMFORT]} and temperature 2500")  # noqa: E501
+            # await client.set_regulation_mode(resource, REGULATION_COMFORT, 2500)
+            # print("Sleeping for 5 seconds..")
 
-            print(f"- Setting to {REGULATION_MODES[REGULATION_SCHEDULE]}")  # noqa: E501
-            await client.set_regulation_mode(resource, REGULATION_SCHEDULE)
+            # print(f"- Setting to {REGULATION_MODES[REGULATION_SCHEDULE]}")  # noqa: E501
+            # await client.set_regulation_mode(resource, REGULATION_SCHEDULE)
             print("Sleeping for 5 seconds..")
             sleep(5)
         # fmt: on
