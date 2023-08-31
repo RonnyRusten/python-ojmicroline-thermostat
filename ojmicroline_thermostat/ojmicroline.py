@@ -6,6 +6,8 @@ import asyncio
 import json
 import socket
 from dataclasses import dataclass
+
+# from datetime import datetime
 from typing import Any
 
 import async_timeout
@@ -203,6 +205,22 @@ class OJMicroline:
         for group in data["GroupContents"]:
             for item in group["Thermostats"]:
                 if len(item):
+                    # now = datetime.now()
+                    # now_formatted = now.strftime("%Y-%m-%dT%H:%M:%S%z")
+                    # thermostat_id = item["Id"]
+                    # hourly_energy_usage = await self._request(
+                    #     "api/EnergyUsage/GetEnergyUsage",
+                    #     method=hdrs.METH_POST,
+                    #     params={"sessionid": self.__session_id},
+                    #     body={
+                    #         "APIKEY": self.__api_key,
+                    #         "DateTime": now_formatted,
+                    #         "History": 0,
+                    #         "ThermostatId": thermostat_id,
+                    #         "ViewType": 1,
+                    #     },
+                    # )
+                    # energyUsage = hourlyEnergyUsage["EnergyUsage"][0]["Usage"]
                     results.append(Thermostat.from_json(item))
 
         return results
