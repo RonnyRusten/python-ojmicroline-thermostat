@@ -7,7 +7,7 @@ import json
 import socket
 from dataclasses import dataclass
 
-# from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 
 import async_timeout
@@ -23,6 +23,7 @@ from .exceptions import (
     OJMicrolineTimeoutException,
 )
 from .models import Thermostat
+from .models import energy_usage
 from .requests import UpdateGroupRequest
 
 
@@ -177,6 +178,25 @@ class OJMicroline:
             self.__session_calls_left = self.__session_calls
             self.__session_id = data["SessionId"]
 
+    async def get_energy_usage(self, date, thermostat_id, view_type) -> list[energy_usage.EnergyUsage]:
+        query_date_formatted = date.strftime("%Y-%m-%dT%H:%M:%S%z")
+        #thermostat_id = item["SerialNumber"]
+        hourly = await self._request(
+            "api/EnergyUsage/GetEnergyUsage",
+            method=hdrs.METH_POST,
+            params={"sessionid": self.__session_id},
+            body={
+                "APIKEY": self.__api_key,
+                "DateTime": query_date_formatted,
+                "History": 0,
+                "ThermostatId": thermostat_id,
+                "ViewType": view_type,
+            },
+        )
+        usage = energy_usage.EnergyUsage.from_json(hourly)
+
+        return usage
+
     async def get_thermostats(self) -> list[Thermostat]:
         """
         Get all the thermostats.
@@ -205,23 +225,29 @@ class OJMicroline:
         for group in data["GroupContents"]:
             for item in group["Thermostats"]:
                 if len(item):
-                    # now = datetime.now()
-                    # now_formatted = now.strftime("%Y-%m-%dT%H:%M:%S%z")
-                    # thermostat_id = item["Id"]
-                    # hourly_energy_usage = await self._request(
-                    #     "api/EnergyUsage/GetEnergyUsage",
-                    #     method=hdrs.METH_POST,
-                    #     params={"sessionid": self.__session_id},
-                    #     body={
-                    #         "APIKEY": self.__api_key,
-                    #         "DateTime": now_formatted,
-                    #         "History": 0,
-                    #         "ThermostatId": thermostat_id,
-                    #         "ViewType": 1,
-                    #     },
-                    # )
-                    # energyUsage = hourlyEnergyUsage["EnergyUsage"][0]["Usage"]
-                    results.append(Thermostat.from_json(item))
+                    thermostat_id = item["SerialNumber"]
+                    query_date = datetime.now()
+                    hourly = await self.get_energy_usage(
+                        date = query_date,
+                        thermostat_id = thermostat_id,
+                        view_type = 1
+                    )
+                    query_date = datetime.now() - timedelta(days = 1)
+                    daily = await self.get_energy_usage(
+                        date = query_date,
+                        thermostat_id = thermostat_id,
+                        view_type = 2
+                    )
+                    monthly = await self.get_energy_usage(
+                        date = query_date,
+                        thermostat_id = thermostat_id,
+                        view_type = 4
+                    )
+                    thermostat = Thermostat.from_json(item)
+                    thermostat.energy_hourly = hourly
+                    thermostat.energy_daily = daily
+                    thermostat.energy_monthly = monthly
+                    results.append(thermostat)
 
         return results
 

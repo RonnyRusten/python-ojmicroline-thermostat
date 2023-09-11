@@ -8,6 +8,7 @@ from .exceptions import (
     OJMicrolineTimeoutException,
 )
 from .models import Thermostat
+from .models import energy_usage
 from .ojmicroline import OJMicroline
 
 __all__ = [

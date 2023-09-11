@@ -54,6 +54,9 @@ class Thermostat:
     vacation_end_time: datetime
     offset: int
     schedule: dict[str, Any]
+    energy_hourly: dict[str, Any]
+    energy_daily: dict[str, Any]
+    energy_monthly: dict[str, Any]
 
     @classmethod
     def from_json(cls, data: dict[str, Any]) -> Thermostat:
@@ -107,6 +110,9 @@ class Thermostat:
                 REGULATION_BOOST: data["MaxSetpoint"],
                 REGULATION_ECO: schedule.get_lowest_temperature(),
             },
+            energy_hourly={},
+            energy_daily={},
+            energy_monthly={},
         )
 
     def get_target_temperature(self) -> int:

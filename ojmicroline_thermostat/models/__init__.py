@@ -6,4 +6,5 @@ from .thermostat import Thermostat
 __all__ = [
     "Thermostat",
     "Schedule",
+    "EnergyUsage",
 ]
